@@ -42,14 +42,14 @@ input_shape = (300, 300, 3)
 
 # priors = pickle.load(open('prior_boxes_ssd300.pkl', 'rb'))
 model = SSD300(input_shape, num_classes=NUM_CLASSES)
-model.load_weights('weights_SSD300.hdf5', by_name=True)
-priors = pickle.load(open('prior_boxes_ssd300.pkl', 'rb'))
+model.load_weights('../weights_SSD300.hdf5', by_name=True)
+priors = pickle.load(open('../prior_boxes_ssd300.pkl', 'rb'))
 bbox_util = BBoxUtility(NUM_CLASSES, priors)
 
 
 # In[33]:
 
-gt = pickle.load(open('VOC2007.pkl', 'rb'))
+gt = pickle.load(open('../VOC2007.pkl', 'rb'))
 keys = sorted(gt.keys())
 num_train = int(round(0.8 * len(keys)))
 train_keys = keys[:num_train]
@@ -231,7 +231,7 @@ class Generator(object):
 
 # In[35]:
 
-path_prefix = './VOCdevkit/VOC2007/JPEGImages/'
+path_prefix = '../VOCdevkit/VOC2007/JPEGImages/'
 gen = Generator(gt, bbox_util, 100, path_prefix,
                 train_keys, val_keys,
                 (input_shape[0], input_shape[1]), do_crop=False)
@@ -254,7 +254,7 @@ for L in model.layers:
 def schedule(epoch, decay=0.9):
     return base_lr * decay**(epoch)
 
-callbacks = [keras.callbacks.ModelCheckpoint('./checkpoints-2/weights.{epoch:02d}-{val_loss:.2f}.hdf5',
+callbacks = [keras.callbacks.ModelCheckpoint('../checkpoints-2/weights.{epoch:02d}-{val_loss:.2f}.hdf5',
                                              verbose=1,
                                              save_weights_only=True),
              keras.callbacks.LearningRateScheduler(schedule),

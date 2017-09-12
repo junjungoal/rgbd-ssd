@@ -18,16 +18,6 @@ from ssd_layers import PriorBox
 
 
 def SSD300(input_shape, num_classes=21):
-    """SSD300 architecture.
-
-    # Arguments
-        input_shape: Shape of the input image,
-            expected to be either (300, 300, 3) or (3, 300, 300)(not tested).
-        num_classes: Number of classes including background.
-
-    # References
-        https://arxiv.org/abs/1512.02325
-    """
     input_layer = Input(shape=input_shape)
 
     # Block 1

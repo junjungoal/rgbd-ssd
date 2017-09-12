@@ -1,2 +1,5 @@
 dataset
 *.hdf5
+src/__pycache__/
+src/.ipynb_checkpoints/
+*pkl

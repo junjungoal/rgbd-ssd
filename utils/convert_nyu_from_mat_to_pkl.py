@@ -15,7 +15,6 @@ class MatPreprocessor(object):
     def _preprocess_mat(self):
         matdata = scipy.io.loadmat(self.mat_path)
         bboxes_data = matdata['SUNRGBDMeta2DBB'][0]
-        i = 0
         for data in bboxes_data:
             bounding_boxes = []
             one_hot_classes = []
@@ -28,18 +27,17 @@ class MatPreprocessor(object):
                         xmax = bbox[2] + xmin
                         ymax = bbox[3] + ymin
                     bounding_box = [xmin, ymin, xmax, ymax]
-                    bounding_boxes.append(bounding_box)
                     class_name = klass[2]
                     one_hot_class = self._to_one_hot(class_name)
+                    if one_hot_class is None:
+                        continue
+                    bounding_boxes.append(bounding_box)
                     one_hot_classes.append(one_hot_class)
                 image_data = np.hstack((bounding_boxes, one_hot_classes))
                 rgb_image_name = data[3][0].replace('/n/fs/sun3d/data/SUNRGBD/kv2/kinect2data/', '')
                 depth_image_name = data[2][0].replace('/n/fs/sun3d/data/SUNRGBD/kv2/kinect2data/', '')
                 self.rgb_data[rgb_image_name] = image_data
                 self.depth_data[depth_image_name] = image_data
-            i += 1
-            if i > 100:
-                break
 
 
     def _to_one_hot(self, name):
@@ -84,6 +82,7 @@ class MatPreprocessor(object):
             one_hot_vector[18] = 1
         else:
             print('unknown label: %s' %name)
+            return None
         return one_hot_vector
 
 parser = argparse.ArgumentParser(description='indicate specific image file path and mat file')

@@ -8,7 +8,6 @@ class MatPreprocessor(object):
     def __init__(self, data_path):
         self.data_path = data_path
         self.num_classes = 11
-        self.data_path = data_path
         self.rgb_data = dict()
         self.depth_data = dict()
         self.scenes = ['desk', 'table', 'kitchen_small', 'meeting_small', 'table_small']

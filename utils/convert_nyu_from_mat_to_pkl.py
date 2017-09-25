@@ -13,6 +13,8 @@ class MatPreprocessor(object):
         self._preprocess_mat()
 
     def _preprocess_mat(self):
+        width = 567
+        height = 427
         matdata = scipy.io.loadmat(self.mat_path)
         bboxes_data = matdata['SUNRGBDMeta2DBB'][0]
         for data in bboxes_data:
@@ -22,10 +24,10 @@ class MatPreprocessor(object):
             if len(data[1]) != 0:
                 for klass in data[1][0]:
                     for bbox in klass[1]:
-                        xmin = bbox[0]
-                        ymin = bbox[1]
-                        xmax = bbox[2] + xmin
-                        ymax = bbox[3] + ymin
+                        xmin = bbox[0] / width
+                        ymin = bbox[1] / height
+                        xmax = (bbox[2] + xmin) / width
+                        ymax = (bbox[3] + ymin) / height
                     bounding_box = [xmin, ymin, xmax, ymax]
                     class_name = klass[2]
                     one_hot_class = self._to_one_hot(class_name)
@@ -33,9 +35,11 @@ class MatPreprocessor(object):
                         continue
                     bounding_boxes.append(bounding_box)
                     one_hot_classes.append(one_hot_class)
+                if len(bounding_box) == 0:
+                    continue
                 image_data = np.hstack((bounding_boxes, one_hot_classes))
-                rgb_image_name = data[3][0].replace('/n/fs/sun3d/data/SUNRGBD/kv2/kinect2data/', '')
-                depth_image_name = data[2][0].replace('/n/fs/sun3d/data/SUNRGBD/kv2/kinect2data/', '')
+                rgb_image_name = data[3][0].replace('/n/fs/sun3d/data/', '')
+                depth_image_name = data[2][0].replace('/n/fs/sun3d/data/', '')
                 self.rgb_data[rgb_image_name] = image_data
                 self.depth_data[depth_image_name] = image_data
 
@@ -44,11 +48,11 @@ class MatPreprocessor(object):
         one_hot_vector = [0] * self.num_classes
         if name == 'bed':
             one_hot_vector[0] = 1
-        elif name == 'night_stand':
+        elif name == 'shelf':
             one_hot_vector[1] = 1
-        elif name == 'ottoman':
+        elif name == 'desk':
             one_hot_vector[2] = 1
-        elif name == 'dresser_mirror':
+        elif name == 'plate':
             one_hot_vector[3] = 1
         elif name == 'lamp':
             one_hot_vector[4] = 1
@@ -56,9 +60,9 @@ class MatPreprocessor(object):
             one_hot_vector[5] = 1
         elif name == 'chair':
             one_hot_vector[6] = 1
-        elif name == 'dining_table':
+        elif name == 'garbage_bin':
             one_hot_vector[7] = 1
-        elif name == 'sofa_chair':
+        elif name == 'door':
             one_hot_vector[8] = 1
         elif name == 'table':
             one_hot_vector[9] = 1
@@ -82,7 +86,7 @@ class MatPreprocessor(object):
             one_hot_vector[18] = 1
         else:
             print('unknown label: %s' %name)
-            return None
+ #           return None
         return one_hot_vector
 
 parser = argparse.ArgumentParser(description='indicate specific image file path and mat file')

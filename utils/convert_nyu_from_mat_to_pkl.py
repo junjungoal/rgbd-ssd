@@ -6,7 +6,7 @@ class MatPreprocessor(object):
     def __init__(self, mat_path, dataset_path):
         self.mat_path = mat_path
         self.dataset_path = dataset_path
-        self.num_classes = 19
+        self.num_classes = 15
         self.rgb_data = dict()
         self.depth_data = dict()
         self.name_list = []
@@ -26,8 +26,10 @@ class MatPreprocessor(object):
                     for bbox in klass[1]:
                         xmin = bbox[0] / width
                         ymin = bbox[1] / height
-                        xmax = (bbox[2] + xmin) / width
-                        ymax = (bbox[3] + ymin) / height
+                        #xmax = (bbox[2] + xmin) / width
+                        #ymax = (bbox[3] + ymin) / height
+                        xmax = (bbox[2] + bbox[0])  / width
+                        ymax = (bbox[3] + bbox[1]) / height
                     bounding_box = [xmin, ymin, xmax, ymax]
                     class_name = klass[2]
                     one_hot_class = self._to_one_hot(class_name)
@@ -35,7 +37,7 @@ class MatPreprocessor(object):
                         continue
                     bounding_boxes.append(bounding_box)
                     one_hot_classes.append(one_hot_class)
-                if len(bounding_box) == 0:
+                if len(bounding_boxes) == 0:
                     continue
                 image_data = np.hstack((bounding_boxes, one_hot_classes))
                 rgb_image_name = data[3][0].replace('/n/fs/sun3d/data/', '')
@@ -50,43 +52,46 @@ class MatPreprocessor(object):
             one_hot_vector[0] = 1
         elif name == 'shelf':
             one_hot_vector[1] = 1
-        elif name == 'desk':
+        elif name == 'bookshelf':
+            one_hot_vector[1] = 1
+        elif name == 'computer':
             one_hot_vector[2] = 1
         elif name == 'plate':
             one_hot_vector[3] = 1
         elif name == 'lamp':
             one_hot_vector[4] = 1
-        elif name == 'pillow':
-            one_hot_vector[5] = 1
-        elif name == 'chair':
-            one_hot_vector[6] = 1
-        elif name == 'garbage_bin':
-            one_hot_vector[7] = 1
-        elif name == 'door':
-            one_hot_vector[8] = 1
         elif name == 'table':
-            one_hot_vector[9] = 1
-        elif name == 'mirror':
-            one_hot_vector[10] = 1
-        elif name == 'bench':
-            one_hot_vector[11] = 1
-        elif name == 'projector':
-            one_hot_vector[12] = 1
-        elif name == 'cabinet':
-            one_hot_vector[13] = 1
-        elif name == 'dresser':
-            one_hot_vector[14] = 1
+            one_hot_vector[5] = 1
         elif name == 'sofa':
-            one_hot_vector[15] = 1
-        elif name == 'monitor':
-            one_hot_vector[16] = 1
-        elif name == 'person':
-            one_hot_vector[17] = 1
+            one_hot_vector[6] = 1
+        elif name == 'sofa_chair':
+            one_hot_vector[6] = 1
+        elif name == 'chair':
+            one_hot_vector[7] = 1
+        elif name == 'pillow':
+            one_hot_vector[8] = 1
         elif name == 'box':
-            one_hot_vector[18] = 1
+            one_hot_vector[9] = 1
+        ## maybe the best model using aboce label
+        elif name == 'desk':
+            one_hot_vector[10] = 1
+        elif name == 'dining_table':
+            one_hot_vector[10] = 1
+        elif name == 'endtable':
+            one_hot_vector[10] = 1
+        elif name == 'coffee_table':
+            one_hot_vector[10] = 1
+        elif name == 'projector':
+            one_hot_vector[11] = 1
+        elif name == 'door':
+            one_hot_vector[12] = 1
+        elif name == 'monitor':
+            one_hot_vector[13] = 1
+        elif name == 'garbage_bin':
+            one_hot_vector[14] = 1
         else:
             print('unknown label: %s' %name)
- #           return None
+            return None
         return one_hot_vector
 
 parser = argparse.ArgumentParser(description='indicate specific image file path and mat file')
@@ -99,6 +104,5 @@ import pickle
 preprocessed_data = MatPreprocessor(args.mat_path, args.dataset_path)
 rgb_data = preprocessed_data.rgb_data
 depth_data = preprocessed_data.depth_data
-
 pickle.dump(rgb_data, open('../pkls/SUNRGBD/RGB.pkl', 'wb'))
 pickle.dump(depth_data, open('../pkls/SUNRGBD/Depth.pkl', 'wb'))

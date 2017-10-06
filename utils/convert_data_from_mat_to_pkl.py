@@ -7,7 +7,7 @@ import argparse
 class MatPreprocessor(object):
     def __init__(self, data_path):
         self.data_path = data_path
-        self.num_classes = 11
+        self.num_classes = 6
         self.rgb_data = dict()
         self.depth_data = dict()
         self.scenes = ['desk', 'table', 'kitchen_small', 'meeting_small', 'table_small']
@@ -18,7 +18,6 @@ class MatPreprocessor(object):
         for scene in self.scenes:
             nb_dir = len(os.listdir(self.data_path + '/' + scene)) // 2
             for i in range(nb_dir):
-                print(i)
                 #nb_files = len(os.listdir(self.data_path + '/' + scene + '/' + scene + '_' + i])) / 2
                 matdata = scipy.io.loadmat(self.data_path + '/' + scene + '/' + scene + '_' + str(i+1) + '.mat')
                 bbox_mat = matdata['bboxes']
@@ -32,40 +31,43 @@ class MatPreprocessor(object):
                     if len(bbox[0]) != 0:
                         for annotation in bbox[0]:
                             category = annotation[0][0]
-                            top = annotation[2][0][0]
-                            bottom = annotation[3][0][0]
-                            left = annotation[4][0][0]
-                            right = annotation[5][0][0]
+                            top = (annotation[2][0][0]-10) / 480
+                            bottom = (annotation[3][0][0]) / 480
+                            left = (annotation[4][0][0]-25) / 600
+                            right = (annotation[5][0][0]-15) / 600
                             bounding_box = [left, bottom, right, top]
-                            bounding_boxes.append(bounding_box)
                             one_hot_class = self._to_one_hot(category)
+                            bounding_boxes.append(bounding_box)
                             one_hot_classes.append(one_hot_class)
                     """
                     1. get file name
                     """
                     bounding_boxes = np.asarray(bounding_boxes)
                     one_hot_classes = np.asarray(one_hot_classes)
+                    if len(one_hot_classes) == 0:
+                        continue
+                    print(one_hot_classes)
                     image_data = np.hstack((bounding_boxes, one_hot_classes))
-                    self.rgb_data[scene + '_' + str(i+1) + '_' + str(j+1) + '.png'] = image_data
-                    self.depth_data[scene + '_' + str(i+1) + '_' + str(j+1) + '_depth.png'] = image_data
+                    self.rgb_data[scene + '/' + scene + '_' + str(i+1) + '/' + scene + '_' + str(i+1) + '_' + str(j+1) + '.png'] = image_data
+                    self.depth_data[scene + '/' + scene + '_' + str(i+1) + '/' + scene + '_' + str(i+1) + '_' + str(j+1) + '_depth.png'] = image_data
 
 
     def _to_one_hot(self, name):
         one_hot_vector = [0] * self.num_classes
-        if name not in self.name_list:
-            self.name_list.append(name)
         if name == 'soda_can':
             one_hot_vector[0] = 1
-        if name == 'cofee_mug':
+        elif name == 'coffee_mug':
             one_hot_vector[1] = 1
-        if name == 'cap':
+        elif name == 'cap':
             one_hot_vector[2] = 1
-        if name == 'flashlight':
+        elif name == 'flashlight':
             one_hot_vector[3] = 1
-        if name == 'bowl':
+        elif name == 'bowl':
             one_hot_vector[4] = 1
-        if name == 'cereal_box':
+        elif name == 'cereal_box':
             one_hot_vector[5] = 1
+        else:
+            print('unknown label: %s' %name)
 
         return one_hot_vector
 
@@ -80,5 +82,5 @@ preprocessed_data = MatPreprocessor(args.data_path)
 rgb_data = preprocessed_data.rgb_data
 depth_data = preprocessed_data.depth_data
 
-pickle.dump(rgb_data, open('RGB.pkl', 'wb'))
-pickle.dump(depth_data, open('Depth.pkl', 'wb'))
+pickle.dump(rgb_data, open('../pkls/rgbd-scenes/RGB.pkl', 'wb'))
+pickle.dump(depth_data, open('../pkls/rgbd-scenes/Depth.pkl', 'wb'))

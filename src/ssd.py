@@ -12,24 +12,31 @@ from keras.layers import Reshape
 from keras.layers import ZeroPadding2D
 from keras.layers import concatenate
 from keras.models import Model
+from keras.applications.vgg16 import VGG16
 
 from ssd_layers import Normalize
 from ssd_layers import PriorBox
 
 
 def SSD300(input_shape, num_classes=21):
+    vgg16 = VGG16(weights='imagenet', include_top=False)
+    weights = vgg16.get_weights()
     input_layer = Input(shape=input_shape)
-
+    print(weights[1].shape)
     # Block 1
     conv1_1 = Conv2D(64, (3, 3),
                      name='conv1_1',
                      padding='same',
-                     activation='relu')(input_layer)
+                     activation='relu',
+                     weights=[weights[0], weights[1]]
+                     )(input_layer)
 
     conv1_2 = Conv2D(64, (3, 3),
                      name='conv1_2',
                      padding='same',
-                     activation='relu')(conv1_1)
+                     activation='relu',
+                     weights=[weights[2], weights[3]]
+                     )(conv1_1)
     pool1 = MaxPooling2D(name='pool1',
                          pool_size=(2, 2),
                          strides=(2, 2),
@@ -39,11 +46,15 @@ def SSD300(input_shape, num_classes=21):
     conv2_1 = Conv2D(128, (3, 3),
                      name='conv2_1',
                      padding='same',
-                     activation='relu')(pool1)
+                     activation='relu',
+                     weights=[weights[4], weights[5]]
+                     )(pool1)
     conv2_2 = Conv2D(128, (3, 3),
                      name='conv2_2',
                      padding='same',
-                     activation='relu')(conv2_1)
+                     activation='relu',
+                     weights=[weights[6], weights[7]]
+                     )(conv2_1)
     pool2 = MaxPooling2D(name='pool2',
                          pool_size=(2, 2),
                          strides=(2, 2),
@@ -53,15 +64,21 @@ def SSD300(input_shape, num_classes=21):
     conv3_1 = Conv2D(256, (3, 3),
                      name='conv3_1',
                      padding='same',
-                     activation='relu')(pool2)
+                     activation='relu',
+                     weights=[weights[8], weights[9]]
+                     )(pool2)
     conv3_2 = Conv2D(256, (3, 3),
                      name='conv3_2',
                      padding='same',
-                     activation='relu')(conv3_1)
+                     activation='relu',
+                     weights=[weights[10], weights[11]]
+                     )(conv3_1)
     conv3_3 = Conv2D(256, (3, 3),
                      name='conv3_3',
                      padding='same',
-                     activation='relu')(conv3_2)
+                     activation='relu',
+                     weights=[weights[12], weights[13]]
+                     )(conv3_2)
     pool3 = MaxPooling2D(name='pool3',
                          pool_size=(2, 2),
                          strides=(2, 2),
@@ -71,15 +88,21 @@ def SSD300(input_shape, num_classes=21):
     conv4_1 = Conv2D(512, (3, 3),
                      name='conv4_1',
                      padding='same',
-                     activation='relu')(pool3)
+                     activation='relu',
+                     weights=[weights[14], weights[15]]
+                     )(pool3)
     conv4_2 = Conv2D(512, (3, 3),
                      name='conv4_2',
                      padding='same',
-                     activation='relu')(conv4_1)
+                     activation='relu',
+                     weights=[weights[16], weights[17]]
+                     )(conv4_1)
     conv4_3 = Conv2D(512, (3, 3),
                      name='conv4_3',
                      padding='same',
-                     activation='relu')(conv4_2)
+                     activation='relu',
+                     weights=[weights[18], weights[19]]
+                     )(conv4_2)
     pool4 = MaxPooling2D(name='pool4',
                          pool_size=(2, 2),
                          strides=(2, 2),
@@ -89,19 +112,26 @@ def SSD300(input_shape, num_classes=21):
     conv5_1 = Conv2D(512, (3, 3),
                      name='conv5_1',
                      padding='same',
-                     activation='relu')(pool4)
+                     activation='relu',
+                     weights=[weights[20], weights[21]]
+                     )(pool4)
     conv5_2 = Conv2D(512, (3, 3),
                      name='conv5_2',
                      padding='same',
-                     activation='relu')(conv5_1)
+                     activation='relu',
+                     weights=[weights[22], weights[23]]
+                     )(conv5_1)
     conv5_3 = Conv2D(512, (3, 3),
                      name='conv5_3',
                      padding='same',
-                     activation='relu')(conv5_2)
+                     activation='relu',
+                     weights=[weights[24], weights[25]]
+                     )(conv5_2)
     pool5 = MaxPooling2D(name='pool5',
                          pool_size=(3, 3),
                          strides=(1, 1),
                          padding='same')(conv5_3)
+
 
     # FC6
     fc6 = Conv2D(1024, (3, 3),

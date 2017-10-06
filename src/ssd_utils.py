@@ -2,7 +2,7 @@
 
 import numpy as np
 import tensorflow as tf
-
+import pdb
 
 class BBoxUtility(object):
     """Utility class to do some stuff with bounding boxes and priors.
@@ -144,6 +144,7 @@ class BBoxUtility(object):
         assignment[:, :4][best_iou_mask] = encoded_boxes[best_iou_idx,
                                                          np.arange(assign_num),
                                                          :4]
+        #pdb.set_trace()
         assignment[:, 4][best_iou_mask] = 0
         assignment[:, 5:-8][best_iou_mask] = boxes[best_iou_idx, 4:]
         assignment[:, -8][best_iou_mask] = 1

@@ -4,6 +4,7 @@
 # In[17]:
 
 from keras.applications.imagenet_utils import preprocess_input
+from keras.applications.vgg16 import VGG16
 from keras.backend.tensorflow_backend import set_session
 from keras.preprocessing import image
 from keras.preprocessing.image import ImageDataGenerator
@@ -20,21 +21,41 @@ from random import shuffle
 from scipy.misc import imresize
 import matplotlib.pyplot as plt
 
+config = tf.ConfigProto(
+    gpu_options=tf.GPUOptions(
+        allow_growth=True # True->必要になったら確保, False->全部
+    )
+)
+sess = sess = tf.Session(config=config)
 
-np.set_printoptions(suppress=True)
-config = tf.ConfigProto()
-config.gpu_options.per_process_gpu_memory_fraction = 0.45
-set_session(tf.Session(config=config))
+
 
 
 # In[70]:
 
 # some constants
-voc_classes = ['bed', 'shelf', 'desk', 'plate', 'lamp',
-               'pillow', 'chair', 'garbage_bin', 'door', 'table', 'mirror',
-               'bench', 'projector','cabinet', 'dresser', 'sofa', 'monitor',
-               'person', 'box']
+#voc_classes = ['bed', 'shelf', 'desk', 'plate', 'lamp',
+#               'pillow', 'chair', 'garbage_bin', 'door', 'table', 'mirror',
+#               'bench', 'sofa', 'monitor', 'person', 'box']
+voc_classes =  ['bed','shelf', 'computer', 'plate', 'lamp', 'table', 'sofa', 'chair', 'pillow', 'box', 'desk', 'projector', 'door', 'monitor', 'garbage_bin']
+
+
+
+"""
+SUNGARD-2- checkpoints
+voc_classes = ['bed', 'shelf', 'computer', 'plate', 'lamp',
+              'table',
+               'sofa', 'chair', 'person', 'pillow', 'box']
+"""
+
+
+"""
+voc_classes = ['soda', 'coffee_mug', 'cap', 'flashlight', 'bowl', 'cereal_box']
+"""
+
+#voc_classes = ['soda_can', 'coffee_mug', 'cap', 'flashlight', 'bowl', 'cereal_box']
 NUM_CLASSES = len(voc_classes) + 1
+print(NUM_CLASSES)
 input_shape = (300, 300, 3) #channel last
 
 
@@ -42,6 +63,10 @@ input_shape = (300, 300, 3) #channel last
 
 # priors = pickle.load(open('prior_boxes_ssd300.pkl', 'rb'))
 model = SSD300(input_shape, num_classes=NUM_CLASSES)
+#model.load_weights('../checkpoints/SUNRGBD/weights.based_set_trainable_vgg16.hdf5', by_name=True)
+#model.load_weights('../checkpoints/rgbd-scenes/temp1/weights.best.hdf5', by_name=True)
+#model.load_weights('../weights_SSD300.hdf5', by_name=True)
+#model.load_weights('../checkpoints/weights.16-4.43.hdf5', by_name=True)
 #model.load_weights('../checkpoints/vocdevkit/weights.14-2.02.hdf5', by_name=True)
 
 priors = pickle.load(open('../pkls/prior_boxes_ssd300.pkl', 'rb'))
@@ -57,7 +82,9 @@ bbox_util = BBoxUtility(NUM_CLASSES, priors)
 
 #gt = pickle.load(open('../VOC2007.pkl', 'rb'))
 gt = pickle.load(open('../pkls/SUNRGBD/RGB.pkl', 'rb'))
+#gt = pickle.load(open('../pkls/rgbd-scenes/RGB.pkl', 'rb'))
 keys = sorted(gt.keys())
+print('num_train', len(keys))
 num_train = int(round(0.8 * len(keys)))
 train_keys = keys[:num_train]
 val_keys = keys[num_train:]
@@ -240,21 +267,22 @@ class Generator(object):
 # In[75]:
 
 path_prefix = '../dataset/'
-gen = Generator(gt, bbox_util, 40, path_prefix,
+#path_prefix = '../dataset/rgbd-scenes/'
+gen = Generator(gt, bbox_util, 32, path_prefix,
                 train_keys, val_keys,
                 (input_shape[0], input_shape[1]), do_crop=False)
 
 
 # In[76]:
 
-#freeze = ['input_1', 'conv1_1', 'conv1_2', 'pool1',
-#          'conv2_1', 'conv2_2', 'pool2']
-#          'conv3_1', 'conv3_2', 'conv3_3', 'pool3']#,
-#           'conv4_1', 'conv4_2', 'conv4_3', 'pool4']
+freeze = ['input_1', 'conv1_1', 'conv1_2', 'pool1',
+          'conv2_1', 'conv2_2', 'pool2',
+          'conv3_1', 'conv3_2', 'conv3_3', 'pool3']
+ #          'conv4_1', 'conv4_2', 'conv4_3', 'pool4']
 
-#for L in model.layers:
- #   if L.name in freeze:
- #       L.trainable = False
+for L in model.layers:
+    if L.name in freeze:
+        L.trainable = False
 
 
 # In[77]:
@@ -262,21 +290,19 @@ gen = Generator(gt, bbox_util, 40, path_prefix,
 def schedule(epoch, decay=0.9):
     return base_lr * decay**(epoch)
 
-callbacks = [keras.callbacks.ModelCheckpoint('../checkpoints/SUNRGBD/weights.best.hdf5',
+callbacks = [keras.callbacks.ModelCheckpoint('../checkpoints/SUNRGBD-3/weights.based_set_trainable_vgg16.hdf5',
                                              verbose=1,
                                              save_best_only=True,
-                                             save_weights_only=True),
-             keras.callbacks.LearningRateScheduler(schedule)]
+                                             save_weights_only=True)]
 
 
 # In[80]:
 
-base_lr = 3e-4
-optim = keras.optimizers.Adam(lr=base_lr)
+base_lr = 1e-3
+optim = keras.optimizers.Adam(lr=base_lr, decay=0.0005)
 # optim = keras.optimizers.RMSprop(lr=base_lr)
-# optim = keras.optimizers.SGD(lr=base_lr, momentum=0.9, decay=decay, nesterov=True)
+#optim = keras.optimizers.SGD(lr=base_lr, momentum=0.9, decay=0.0005, nesterov=True)
 model.compile(optimizer=optim,
-              metrics=['accuracy'],
               loss=MultiboxLoss(NUM_CLASSES, neg_pos_ratio=2.0).compute_loss)
 
 
@@ -301,7 +327,7 @@ model.compile(optimizer=optim,
 # In[28]:
 
 nb_epoch = 300
-history = model.fit_generator(gen.generate(True), gen.batch_size,
+history = model.fit_generator(gen.generate(True), len(train_keys)//gen.batch_size,
                               nb_epoch, verbose=1,
                               callbacks=callbacks,
                               validation_data=gen.generate(False),

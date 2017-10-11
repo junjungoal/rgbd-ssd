@@ -34,26 +34,8 @@ sess = sess = tf.Session(config=config)
 # In[70]:
 
 # some constants
-#voc_classes = ['bed', 'shelf', 'desk', 'plate', 'lamp',
-#               'pillow', 'chair', 'garbage_bin', 'door', 'table', 'mirror',
-#               'bench', 'sofa', 'monitor', 'person', 'box']
-voc_classes =  ['bed','shelf', 'computer', 'plate', 'lamp', 'table', 'sofa', 'chair', 'pillow', 'box', 'desk', 'projector', 'door', 'monitor', 'garbage_bin']
+voc_classes = ['book', 'bookcase', 'table', 'sofa', 'chair', 'bottle', 'pillow', 'monitor', 'phone', 'cup', 'keyboard', 'mouse', 'scissors', 'speaker', 'paper_notebook', 'table_knife', 'poweroutlet', 'soap', 'remote', 'stapler', 'pen_or_pencil', 'letter_tray', 'bowl']
 
-
-
-"""
-SUNGARD-2- checkpoints
-voc_classes = ['bed', 'shelf', 'computer', 'plate', 'lamp',
-              'table',
-               'sofa', 'chair', 'person', 'pillow', 'box']
-"""
-
-
-"""
-voc_classes = ['soda', 'coffee_mug', 'cap', 'flashlight', 'bowl', 'cereal_box']
-"""
-
-#voc_classes = ['soda_can', 'coffee_mug', 'cap', 'flashlight', 'bowl', 'cereal_box']
 NUM_CLASSES = len(voc_classes) + 1
 print(NUM_CLASSES)
 input_shape = (300, 300, 3) #channel last
@@ -61,13 +43,9 @@ input_shape = (300, 300, 3) #channel last
 
 # In[71]:
 
-# priors = pickle.load(open('prior_boxes_ssd300.pkl', 'rb'))
 model = SSD300(input_shape, num_classes=NUM_CLASSES)
-#model.load_weights('../checkpoints/SUNRGBD/weights.based_set_trainable_vgg16.hdf5', by_name=True)
-#model.load_weights('../checkpoints/rgbd-scenes/temp1/weights.best.hdf5', by_name=True)
+model.load_weights('../checkpoints/VOCB3DO/weights.best-2.hdf5')
 #model.load_weights('../weights_SSD300.hdf5', by_name=True)
-#model.load_weights('../checkpoints/weights.16-4.43.hdf5', by_name=True)
-#model.load_weights('../checkpoints/vocdevkit/weights.14-2.02.hdf5', by_name=True)
 
 priors = pickle.load(open('../pkls/prior_boxes_ssd300.pkl', 'rb'))
 bbox_util = BBoxUtility(NUM_CLASSES, priors)
@@ -75,14 +53,7 @@ bbox_util = BBoxUtility(NUM_CLASSES, priors)
 
 # In[72]:
 
-#model3= Concatenate([model, model2])
-
-
-# In[73]:
-
-#gt = pickle.load(open('../VOC2007.pkl', 'rb'))
-gt = pickle.load(open('../pkls/SUNRGBD/RGB.pkl', 'rb'))
-#gt = pickle.load(open('../pkls/rgbd-scenes/RGB.pkl', 'rb'))
+gt = pickle.load(open('../pkls/VOCB3DO.pkl', 'rb'))
 keys = sorted(gt.keys())
 print('num_train', len(keys))
 num_train = int(round(0.8 * len(keys)))
@@ -266,7 +237,7 @@ class Generator(object):
 
 # In[75]:
 
-path_prefix = '../dataset/'
+path_prefix = '../dataset/VOCB3DO/KinectColor/'
 #path_prefix = '../dataset/rgbd-scenes/'
 gen = Generator(gt, bbox_util, 32, path_prefix,
                 train_keys, val_keys,
@@ -275,14 +246,14 @@ gen = Generator(gt, bbox_util, 32, path_prefix,
 
 # In[76]:
 
-freeze = ['input_1', 'conv1_1', 'conv1_2', 'pool1',
-          'conv2_1', 'conv2_2', 'pool2',
-          'conv3_1', 'conv3_2', 'conv3_3', 'pool3']
+#freeze = ['input_1', 'conv1_1', 'conv1_2', 'pool1',
+#          'conv2_1', 'conv2_2', 'pool2',
+#          'conv3_1', 'conv3_2', 'conv3_3', 'pool3']
  #          'conv4_1', 'conv4_2', 'conv4_3', 'pool4']
 
-for L in model.layers:
-    if L.name in freeze:
-        L.trainable = False
+#for L in model.layers:
+#    if L.name in freeze:
+#        L.trainable = False
 
 
 # In[77]:
@@ -290,7 +261,7 @@ for L in model.layers:
 def schedule(epoch, decay=0.9):
     return base_lr * decay**(epoch)
 
-callbacks = [keras.callbacks.ModelCheckpoint('../checkpoints/SUNRGBD-3/weights.based_set_trainable_vgg16.hdf5',
+callbacks = [keras.callbacks.ModelCheckpoint('../checkpoints/VOCB3DO/weights.best-2.hdf5',
                                              verbose=1,
                                              save_best_only=True,
                                              save_weights_only=True)]

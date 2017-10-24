@@ -72,7 +72,8 @@ def calc_detection_prec_rec(pred_labels, pred_scores, pred_bboxes, gt_bboxes, gt
             pred_bbox_l = pred_bbox[pred_mask_l]
             pred_score_l = pred_score[pred_mask_l]
             # sort by score
-            order = pred_score_l.argsort()[::-1].flatten()
+            order = pred_score_l.argsort(axis=0)[::-1].flatten()
+            #order = pred_score_l.argsort()[::-1]
             pred_bbox_l = pred_bbox_l[order]
             pred_score_l = pred_score_l[order]
 
@@ -129,7 +130,7 @@ def calc_detection_prec_rec(pred_labels, pred_scores, pred_bboxes, gt_bboxes, gt
         score_l = np.array(score[l])
         match_l = np.array(match[l], dtype=np.int8)
 
-        order = score_l.argsort()[::-1]
+        order = score_l.argsort(axis=0)[::-1].flatten()
         match_l = match_l[order]
 
         tp = np.cumsum(match_l == 1)

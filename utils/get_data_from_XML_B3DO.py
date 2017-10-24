@@ -6,7 +6,7 @@ class XML_preprocessor(object):
 
     def __init__(self, data_path):
         self.path_prefix = data_path
-        self.num_classes = 20
+        self.num_classes = 21
         self.data = dict()
         self.class_names = []
         self._preprocess_XML()
@@ -30,8 +30,8 @@ class XML_preprocessor(object):
                 bounding_box = [xmin,ymin,xmax,ymax]
                 class_name = object_tree.find('name').text
                 one_hot_class = self._to_one_hot(class_name)
-#                if 1 not in one_hot_class:
-#                    continue
+                if 1 not in one_hot_class:
+                    continue
                 bounding_boxes.append(bounding_box)
                 one_hot_classes.append(one_hot_class)
             if len(bounding_boxes) == 0:
@@ -85,6 +85,8 @@ class XML_preprocessor(object):
             one_hot_vector[18] = 1
         elif name == 'chair':
             one_hot_vector[19] = 1
+        elif name == 'trash_can':
+            one_hot_vector[20] = 1
 
         else:
             flag = 1

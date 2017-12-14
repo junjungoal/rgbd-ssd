@@ -239,7 +239,7 @@ class Generator(object):
 
 path_prefix = '../dataset/VOCB3DO/KinectColor/'
 #path_prefix = '../dataset/rgbd-scenes/'
-gen = Generator(gt, bbox_util, 32, path_prefix,
+gen = Generator(gt, bbox_util, 16, path_prefix,
                 train_keys, val_keys,
                 (input_shape[0], input_shape[1]), do_crop=False)
 
@@ -271,31 +271,10 @@ callbacks = [keras.callbacks.ModelCheckpoint('../checkpoints/VOCB3DO/weights.bes
 
 base_lr = 1e-3
 optim = keras.optimizers.Adam(lr=base_lr, decay=0.0005)
-# optim = keras.optimizers.RMSprop(lr=base_lr)
-#optim = keras.optimizers.SGD(lr=base_lr, momentum=0.9, decay=0.0005, nesterov=True)
 model.compile(optimizer=optim,
               loss=MultiboxLoss(NUM_CLASSES, neg_pos_ratio=2.0).compute_loss)
 
 
-# In[81]:
-
-
-
-# In[ ]:
-
-
-
-
-# In[ ]:
-
-
-
-
-# In[27]:
-
-
-
-# In[28]:
 
 nb_epoch = 300
 history = model.fit_generator(gen.generate(True), len(train_keys)//gen.batch_size,

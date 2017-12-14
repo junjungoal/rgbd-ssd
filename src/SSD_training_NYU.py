@@ -20,14 +20,18 @@ from ssd_utils import BBoxUtility
 from random import shuffle
 from scipy.misc import imresize
 import matplotlib.pyplot as plt
+import keras.callbacks
+import keras.backend.tensorflow_backend as KTF
+import tensorflow as tf
+
 
 config = tf.ConfigProto(
     gpu_options=tf.GPUOptions(
+        visible_device_list="1",
         allow_growth=True # True->必要になったら確保, False->全部
     )
 )
-sess = sess = tf.Session(config=config)
-
+set_session(tf.Session(config=config))
 
 
 
@@ -56,6 +60,7 @@ print('based on VGG16 pretrained model')
 # priors = pickle.load(open('prior_boxes_ssd300.pkl', 'rb'))
 model = SSD300(input_shape, num_classes=NUM_CLASSES)
 model.load_weights('../weights_SSD300.hdf5', by_name=True)
+print(model.summary())
 #model.load_weights('../checkpoints/SUNRGBD/weights-v3.16-3.50.hdf5')
 #model.load_weights('../checkpoints/VOCB3DO/weights-v4.00-3.54.hdf5', by_name=True)
 #model.load_weights('../checkpoints/vocdevkit/weights.14-2.02.hdf5', by_name=True)
@@ -71,17 +76,20 @@ bbox_util = BBoxUtility(NUM_CLASSES, priors)
 
 # In[5]:
 
-gt = pickle.load(open('../pkls/SUNRGBD/RGB_v7.pkl', 'rb'))
+gt = pickle.load(open('../pkls/SUNRGBD/RGB_v8.pkl', 'rb'))
 keys = sorted(gt.keys())
-num_train = int(round(0.9 * len(keys)))
+num_train = int(round(0.8 * len(keys)))
 train_keys = keys[:num_train]
+num_val = int(round((len(keys) - num_train)/2))
 val_keys = keys[num_train:]
-num_val = len(val_keys)
+val_keys = val_keys[:num_val]
+
+
+
 
 
 # In[6]:
 
-print(num_train)
 
 
 # In[7]:
@@ -258,22 +266,13 @@ class Generator(object):
 
 # In[8]:
 
-path_prefix = '../dataset/'
-gen = Generator(gt, bbox_util, 32, path_prefix,
+path_prefix = '/data/jun/dataset/'
+gen = Generator(gt, bbox_util, 16, path_prefix,
                 train_keys, val_keys,
                 (input_shape[0], input_shape[1]), do_crop=True)
 
 
 # In[9]:
-
-freeze = ['input_1', 'conv1_1', 'conv1_2', 'pool1',
-           'conv2_1', 'conv2_2', 'pool2']
-#           'conv3_1', 'conv3_2', 'conv3_3', 'pool3']
-# #           'conv4_1', 'conv4_2', 'conv4_3', 'pool4']
-
-for L in model.layers:
-    if L.name in freeze:
-        L.trainable = False
 
 
 # In[10]:
@@ -281,23 +280,21 @@ for L in model.layers:
 def schedule(epoch, decay=0.9):
     return base_lr * decay**(epoch)
 
-callbacks = [keras.callbacks.ModelCheckpoint('../checkpoints/SUNRGBD/v24/weights-v24.{epoch:02d}-{val_loss:.2f}.hdf5',
+tb_cb = keras.callbacks.TensorBoard(log_dir="../tensor_log/rgb_v3/")
+callbacks = [keras.callbacks.ModelCheckpoint('/data/jun/checkpoints/SUNRGBD/v3/weights-v3.{epoch:02d}-{val_loss:.2f}.hdf5',
                                              verbose=1,
                                             save_best_only=True,
                                              save_weights_only=True),
-             keras.callbacks.LearningRateScheduler(schedule)]
+             keras.callbacks.LearningRateScheduler(schedule), tb_cb]
 
 
 # In[11]:
 
 
-base_lr = 3e-4
+base_lr = 4e-4
 optim = keras.optimizers.Adam(lr=base_lr)
-# optim = keras.optimizers.RMSprop(lr=base_lr)
-# optim = keras.optimizers.SGD(lr=base_lr, momentum=0.9, decay=decay, nesterov=True)
 model.compile(optimizer=optim,
               loss=MultiboxLoss(NUM_CLASSES, neg_pos_ratio=2.0).compute_loss)
-
 
 # In[ ]:
 
@@ -309,29 +306,3 @@ history = model.fit_generator(gen.generate(True), gen.train_batches//gen.batch_s
                               validation_steps=gen.batch_size,
                               workers=1)
 
-
-fig, (axL, axR) = plt.subplots(ncols=2, figsize=(10,4))
-
-# loss
-def plot_history_loss(fit):
-    # Plot the loss in the history
-    axL.plot(fit.history['loss'],label="loss for training")
-    axL.plot(fit.history['val_loss'],label="loss for validation")
-    axL.set_title('model loss')
-    axL.set_xlabel('epoch')
-    axL.set_ylabel('loss')
-    axL.legend(loc='upper right')
-
-#def plot_history_acc(fit):
-    # Plot the loss in the history
-#    print(fit.history.keys())
-#    axR.plot(fit.history['acc'],label="loss for training")
-#    axR.plot(fit.history['val_acc'],label="loss for validation")
-#    axR.set_title('model accuracy')
-#    axR.set_xlabel('epoch')
-#    axR.set_ylabel('accuracy')
-#    axR.legend(loc='upper right')
-plot_history_loss(history)
-#plot_history_acc(history)
-fig.savefig('./SUNRGBD_v2_png')
-plt.close()

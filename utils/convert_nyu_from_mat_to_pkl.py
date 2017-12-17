@@ -16,7 +16,7 @@ class MatPreprocessor(object):
     def _preprocess_mat(self):
         matdata = scipy.io.loadmat(self.mat_path)
         bboxes_data = matdata['SUNRGBDMeta2DBB'][0]
-        path_prefix = '../dataset/'
+        path_prefix = '/media/jun/dataset/'
         for data in bboxes_data:
             bounding_boxes = []
             one_hot_classes = []
@@ -53,6 +53,8 @@ class MatPreprocessor(object):
                 if len(bounding_boxes) == 0:
                     continue
                 image_data = np.hstack((bounding_boxes, one_hot_classes))
+                print(rgb_image_name)
+                print(depth_image_name)
                 self.rgb_data[rgb_image_name] = image_data
                 self.depth_data[depth_image_name] = image_data
 
@@ -113,6 +115,6 @@ import pickle
 preprocessed_data = MatPreprocessor(args.mat_path, args.dataset_path)
 rgb_data = preprocessed_data.rgb_data
 depth_data = preprocessed_data.depth_data
-pickle.dump(rgb_data, open('../pkls/SUNRGBD/RGB_v7.pkl', 'wb'))
-pickle.dump(depth_data, open('../pkls/SUNRGBD/Depth_v7.pkl', 'wb'))
+pickle.dump(rgb_data, open('../pkls/SUNRGBD/RGB_v8.pkl', 'wb'))
+pickle.dump(depth_data, open('../pkls/SUNRGBD/Depth_v8.pkl', 'wb'))
 

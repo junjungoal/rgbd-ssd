@@ -27,7 +27,7 @@ import tensorflow as tf
 
 config = tf.ConfigProto(
     gpu_options=tf.GPUOptions(
-        visible_device_list="1",
+        visible_device_list="0",
         allow_growth=True # True->必要になったら確保, False->全部
     )
 )
@@ -77,7 +77,9 @@ bbox_util = BBoxUtility(NUM_CLASSES, priors)
 # In[5]:
 
 gt = pickle.load(open('../pkls/SUNRGBD/RGB_v8.pkl', 'rb'))
+
 keys = sorted(gt.keys())
+shuffle(keys)
 num_train = int(round(0.8 * len(keys)))
 train_keys = keys[:num_train]
 num_val = int(round((len(keys) - num_train)/2))
@@ -280,8 +282,8 @@ gen = Generator(gt, bbox_util, 16, path_prefix,
 def schedule(epoch, decay=0.9):
     return base_lr * decay**(epoch)
 
-tb_cb = keras.callbacks.TensorBoard(log_dir="../tensor_log/rgb_v3/")
-callbacks = [keras.callbacks.ModelCheckpoint('/data/jun/checkpoints/SUNRGBD/v3/weights-v3.{epoch:02d}-{val_loss:.2f}.hdf5',
+tb_cb = keras.callbacks.TensorBoard(log_dir="../tensor_log/estimation/RGB/v8/")
+callbacks = [keras.callbacks.ModelCheckpoint('/data/jun/checkpoints/SUNRGBD/estimation/RGB/v8/weights.{epoch:02d}-{val_loss:.2f}.hdf5',
                                              verbose=1,
                                             save_best_only=True,
                                              save_weights_only=True),
@@ -298,7 +300,7 @@ model.compile(optimizer=optim,
 
 # In[ ]:
 
-nb_epoch = 200
+nb_epoch = 100
 history = model.fit_generator(gen.generate(True), gen.train_batches//gen.batch_size,
                               nb_epoch, verbose=1,
                               callbacks=callbacks,

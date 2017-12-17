@@ -44,7 +44,7 @@ input_shape = (300, 300, 3) #channel last
 # In[71]:
 
 model = SSD300(input_shape, num_classes=NUM_CLASSES)
-model.load_weights('../checkpoints/VOCB3DO/weights.best-2.hdf5')
+#model.load_weights('../checkpoints/VOCB3DO/weights.best-2.hdf5')
 #model.load_weights('../weights_SSD300.hdf5', by_name=True)
 
 priors = pickle.load(open('../pkls/prior_boxes_ssd300.pkl', 'rb'))

@@ -49,6 +49,8 @@ rgb_gt = pickle.load(open('../pkls/SUNRGBD/RGB_v8.pkl', 'rb'))
 depth_gt = pickle.load(open('../pkls/SUNRGBD/Depth_v8.pkl', 'rb'))
 rgb_keys = sorted(rgb_gt.keys())
 depth_keys = sorted(depth_gt.keys())
+shuffle(rgb_keys)
+shuffle(depth_keys)
 num_train = int(round(0.8 * len(rgb_keys)))
 rgb_train_keys = rgb_keys[:num_train]
 depth_train_keys = depth_keys[:num_train]
@@ -59,6 +61,11 @@ depth_val_keys = depth_keys[num_train:]
 depth_val_keys = depth_val_keys[:num_val]
 
 
+with open('/data/jun/pkls/RGBD-1/rgb-v10.pkl','wb') as f:
+    pickle.dump(rgb_keys, f)
+
+with open('/data/jun/pkls/RGBD-1/depth-v10.pkl','wb') as f:
+    pickle.dump(depth_keys, f)
 
 class Generator(object):
     def __init__(self, rgb_gt, depth_gt, bbox_util,
@@ -297,13 +304,13 @@ optim = keras.optimizers.Adam(lr=base_lr)
 model.compile(optimizer=optim,
               loss=MultiboxLoss(NUM_CLASSES, neg_pos_ratio=2.0).compute_loss,)
 
-log_path = '../tensor_log/v2-5'
+log_path = '../tensor_log/estimation/RGBD-1/v9'
 callback = TensorBoard(log_path)
 callback.set_model(model)
 
 
 
-nb_epoch = 200
+nb_epoch = 100
 batch_size = gen.batch_size
 epoch_length  = gen.train_batches//gen.batch_size
 #epoch_length  = 5
@@ -350,7 +357,7 @@ for epoch in range(nb_epoch):
             if curr_loss < best_loss:
                 print('Total loss decreased from {} to {}, saving weights'.format(best_loss,curr_loss))
                 best_loss = curr_loss
-                model.save_weights('/data/jun/checkpoints/SUNRGBD/RGBD/v2-5/weights-v2-5.{epoch:02d}-{val_loss:.2f}.hdf5'.format(epoch=epoch, val_loss=best_loss))
+                model.save_weights('/data/jun/checkpoints/SUNRGBD/estimation/RGBD-1/v10/weights.{epoch:02d}-{val_loss:.2f}.hdf5'.format(epoch=epoch, val_loss=best_loss))
             iter_num = 0
             break
 

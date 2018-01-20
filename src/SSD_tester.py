@@ -100,6 +100,7 @@ def calc_detection_prec_rec(pred_labels, pred_scores, pred_bboxes, gt_bboxes, gt
             iou = bbox_iou(pred_bbox_l, gt_bbox_l)
             gt_index = iou.argmax(axis=1)
             # set -1 if there is no matching ground truth
+            mean_iou = np.mean(iou)
             gt_index[iou.max(axis=1) < iou_thresh] = -1
             del iou
             selec = np.zeros(gt_bbox_l.shape[0], dtype=bool)
@@ -143,7 +144,7 @@ def calc_detection_prec_rec(pred_labels, pred_scores, pred_bboxes, gt_bboxes, gt
         if n_pos[l] > 0:
             rec[l] = tp / n_pos[l]
 
-    return prec, rec
+    return prec, rec, mean_iou
 
 
 def calc_detection_ap(prec, rec, use_07_metric=False):
@@ -178,3 +179,8 @@ def calc_detection_ap(prec, rec, use_07_metric=False):
             # and sum (\Delta recall) * prec
             ap[l] = np.sum((mrec[i + 1] - mrec[i]) * mpre[i + 1])
     return ap
+
+def calc_detection_mean_iou(pred_labels, pred_scores, pred_bboxes, gt_bboxes, gt_labels):
+    pred_bboxes = iter(pred_bboxes)
+    pred_labels= iter(pred_labels)
+    pred_scores = iter(pred_scores)

@@ -26,7 +26,7 @@ from depth_preprocess import hole_filling
 
 config = tf.ConfigProto(
     gpu_options=tf.GPUOptions(
-        visible_device_list="0",
+ #       visible_device_list="0",
         allow_growth=True # True->必要になったら確保, False->全部
     )
 )
@@ -46,6 +46,8 @@ rgb_gt = pickle.load(open('../pkls/SUNRGBD/RGB_v8.pkl', 'rb'))
 depth_gt = pickle.load(open('../pkls/SUNRGBD/Depth_v8.pkl', 'rb'))
 rgb_keys = sorted(rgb_gt.keys())
 depth_keys = sorted(depth_gt.keys())
+shuffle(rgb_keys)
+shuffle(depth_keys)
 num_train = int(round(0.8 * len(rgb_keys)))
 rgb_train_keys = rgb_keys[:num_train]
 depth_train_keys = depth_keys[:num_train]
@@ -55,7 +57,12 @@ rgb_val_keys = rgb_val_keys[:num_val]
 depth_val_keys = depth_keys[num_train:]
 depth_val_keys = depth_val_keys[:num_val]
 
-print("canny edge filter and bilateral filter")
+
+with open('/data/jun/pkls/RGBD-3/rgb-v3.pkl','wb') as f:
+    pickle.dump(rgb_keys, f)
+
+with open('/data/jun/pkls/RGBD-3/depth-v3.pkl','wb') as f:
+    pickle.dump(depth_keys, f)
 
 
 
@@ -225,12 +232,12 @@ class Generator(object):
                 depth_img = imresize(depth_img, self.depth_image_size).astype('float32')
                 depth_img = depth_img / np.max(depth_img)
                 depth_img = np.sqrt(depth_img)
-                depth_img = np.array(depth_img*256, dtype=int)
+                depth_img = np.array(depth_img*256, dtype=float)
                 depth_img = hole_filling(depth_img)
                 #depth_img = depth_img.astype('float32')
-                depth_img = np.uint8(depth_img)
-                depth_img = cv2.Canny(depth_img, 70, 110)
-                depth_img = cv2.bilateralFilter(depth_img, d=5, sigmaColor=5, sigmaSpace=2)
+ #               depth_img = np.uint8(depth_img)
+                #depth_img = cv2.Canny(depth_img, 70, 110)
+                #depth_img = cv2.bilateralFilter(depth_img, d=5, sigmaColor=5, sigmaSpace=2)
                 depth_img = np.expand_dims(depth_img, axis=2)
                 if train:
                     shuffle(self.color_jitter)
@@ -247,9 +254,9 @@ class Generator(object):
                 rgb_img -= np.mean(rgb_img)
                 rgb_img /= std
 
-                #depth_std = np.std(depth_img)
-                #depth_img -= np.mean(depth_img)
-                #depth_img /= depth_std
+                depth_std = np.std(depth_img)
+                depth_img -= np.mean(depth_img)
+                depth_img /= depth_std
                 y = self.bbox_util.assign_boxes(y)
                 rgb_inputs.append(rgb_img)
                 depth_inputs.append(depth_img)
@@ -268,7 +275,6 @@ path_prefix = '/data/jun/dataset/'
 gen = Generator(rgb_gt, depth_gt, bbox_util, 16, path_prefix,
                 rgb_train_keys,depth_train_keys, rgb_val_keys, depth_val_keys,
                 (rgb_input_shape[0], rgb_input_shape[1]), (depth_input_shape[0], depth_input_shape[1]), do_crop=True)
-
 names = ['train_loss', 'val_loss']
 # In[9]:
 
@@ -302,13 +308,13 @@ optim = keras.optimizers.Adam(lr=base_lr)
 model.compile(optimizer=optim,
               loss=MultiboxLoss(NUM_CLASSES, neg_pos_ratio=2.0).compute_loss,)
 
-log_path = '../tensor_log/RGBD-4/v2'
+log_path = '../tensor_log/estimation/RGBD-3/v3'
 callback = TensorBoard(log_path)
 callback.set_model(model)
 
 
 
-nb_epoch = 200
+nb_epoch = 100
 batch_size = gen.batch_size
 epoch_length  = gen.train_batches//gen.batch_size
 #epoch_length  = 5
@@ -319,6 +325,7 @@ val_losses = np.zeros((val_epoch_length))
 iter_num = 0
 val_iter_num = 0
 best_loss = np.Inf
+best_val_loss = np.inf
 start_time = time.time()
 for epoch in range(nb_epoch):
     progbar = generic_utils.Progbar(epoch_length)
@@ -350,12 +357,13 @@ for epoch in range(nb_epoch):
 
             print('average loss: {train_loss:.4f}, validation loss: {val_loss:.4f}'.format(train_loss=train_avg_loss, val_loss=val_avg_loss))
             curr_loss = train_avg_loss
+            curr_val_loss = val_avg_loss
             start_time = time.time()
             print('Elapsed time: {}'.format(time.time() - start_time))
-            if curr_loss < best_loss:
-                print('Total loss decreased from {} to {}, saving weights'.format(best_loss,curr_loss))
-                best_loss = curr_loss
-                model.save_weights('/data/jun/checkpoints/SUNRGBD/RGBD-4/v2/weights-v2.{epoch:02d}-{val_loss:.2f}.hdf5'.format(epoch=epoch, val_loss=best_loss))
+            if curr_val_loss < best_val_loss:
+                print('Total loss decreased from {} to {}, saving weights'.format(best_val_loss,curr_val_loss))
+                best_val_loss = curr_val_loss
+                model.save_weights('/data/jun/checkpoints/SUNRGBD/estimation/RGBD-3/v3/weights.{epoch:02d}-{val_loss:.2f}.hdf5'.format(epoch=epoch, val_loss=best_val_loss))
             iter_num = 0
             break
 

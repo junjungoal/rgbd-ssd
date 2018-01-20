@@ -27,7 +27,7 @@ import tensorflow as tf
 
 config = tf.ConfigProto(
     gpu_options=tf.GPUOptions(
-        visible_device_list="0",
+  #      visible_device_list="0",
         allow_growth=True # True->必要になったら確保, False->全部
     )
 )
@@ -86,8 +86,8 @@ num_val = int(round((len(keys) - num_train)/2))
 val_keys = keys[num_train:]
 val_keys = val_keys[:num_val]
 
-
-
+with open('/data/jun/pkls/RGB/v7.pkl','wb') as f:
+    pickle.dump(keys, f)
 
 
 # In[6]:
@@ -269,8 +269,8 @@ class Generator(object):
 # In[8]:
 
 path_prefix = '/data/jun/dataset/'
-gen = Generator(gt, bbox_util, 16, path_prefix,
-                train_keys, val_keys,
+gen = Generator(gt, bbox_util, 1, path_prefix,
+        train_keys[0:1], val_keys,
                 (input_shape[0], input_shape[1]), do_crop=True)
 
 
@@ -282,12 +282,13 @@ gen = Generator(gt, bbox_util, 16, path_prefix,
 def schedule(epoch, decay=0.9):
     return base_lr * decay**(epoch)
 
-tb_cb = keras.callbacks.TensorBoard(log_dir="../tensor_log/estimation/RGB/v8/")
-callbacks = [keras.callbacks.ModelCheckpoint('/data/jun/checkpoints/SUNRGBD/estimation/RGB/v8/weights.{epoch:02d}-{val_loss:.2f}.hdf5',
+#tb_cb = keras.callbacks.TensorBoard(log_dir="../tensor_log/estimation/RGB/v7/")
+callbacks = [keras.callbacks.ModelCheckpoint('/data/jun/checkpoints/SUNRGBD/estimation/RGB/v7/_____tmp-weights.{epoch:02d}-{val_loss:.2f}.hdf5',
                                              verbose=1,
                                             save_best_only=True,
                                              save_weights_only=True),
-             keras.callbacks.LearningRateScheduler(schedule), tb_cb]
+             keras.callbacks.LearningRateScheduler(schedule)]
+            # ,tb_cb]
 
 
 # In[11]:

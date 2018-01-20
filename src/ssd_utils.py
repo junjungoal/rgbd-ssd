@@ -31,7 +31,7 @@ class BBoxUtility(object):
         self.nms = tf.image.non_max_suppression(self.boxes, self.scores,
                                                 self._top_k,
                                                 iou_threshold=self._nms_thresh)
-        self.sess = tf.Session(config=tf.ConfigProto(device_count={'GPU': 0}))
+        self.sess = tf.Session(config=tf.ConfigProto(device_count={'GPU': 1}))
 
     @property
     def nms_thresh(self):

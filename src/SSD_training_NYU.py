@@ -79,15 +79,15 @@ bbox_util = BBoxUtility(NUM_CLASSES, priors)
 gt = pickle.load(open('../pkls/SUNRGBD/RGB_v8.pkl', 'rb'))
 
 keys = sorted(gt.keys())
-shuffle(keys)
+#shuffle(keys)
 num_train = int(round(0.8 * len(keys)))
 train_keys = keys[:num_train]
 num_val = int(round((len(keys) - num_train)/2))
 val_keys = keys[num_train:]
 val_keys = val_keys[:num_val]
 
-with open('/data/jun/pkls/RGB/v7.pkl','wb') as f:
-    pickle.dump(keys, f)
+#with open('/data/jun/pkls/RGB/v7.pkl','wb') as f:
+#    pickle.dump(keys, f)
 
 
 # In[6]:
@@ -269,8 +269,8 @@ class Generator(object):
 # In[8]:
 
 path_prefix = '/data/jun/dataset/'
-gen = Generator(gt, bbox_util, 1, path_prefix,
-        train_keys[0:1], val_keys,
+gen = Generator(gt, bbox_util, 32, path_prefix,
+        train_keys, val_keys,
                 (input_shape[0], input_shape[1]), do_crop=True)
 
 
@@ -283,11 +283,11 @@ def schedule(epoch, decay=0.9):
     return base_lr * decay**(epoch)
 
 #tb_cb = keras.callbacks.TensorBoard(log_dir="../tensor_log/estimation/RGB/v7/")
-callbacks = [keras.callbacks.ModelCheckpoint('/data/jun/checkpoints/SUNRGBD/estimation/RGB/v7/_____tmp-weights.{epoch:02d}-{val_loss:.2f}.hdf5',
-                                             verbose=1,
-                                            save_best_only=True,
-                                             save_weights_only=True),
-             keras.callbacks.LearningRateScheduler(schedule)]
+#callbacks = [keras.callbacks.ModelCheckpoint('/data/jun/checkpoints/SUNRGBD/estimation/prec/RGB/weights.{epoch:02d}-{val_loss:.2f}.hdf5',
+#                                             verbose=1,
+#                                            save_best_only=True,
+#                                             save_weights_only=True),
+#             keras.callbacks.LearningRateScheduler(schedule)]
             # ,tb_cb]
 
 
@@ -304,7 +304,7 @@ model.compile(optimizer=optim,
 nb_epoch = 100
 history = model.fit_generator(gen.generate(True), gen.train_batches//gen.batch_size,
                               nb_epoch, verbose=1,
-                              callbacks=callbacks,
+                              #callbacks=callbacks,
                               validation_data=gen.generate(False),
                               validation_steps=gen.batch_size,
                               workers=1)

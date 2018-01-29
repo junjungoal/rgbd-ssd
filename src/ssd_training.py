@@ -132,9 +132,10 @@ class MultiboxLoss(object):
         neg_conf_loss = tf.reduce_sum(neg_conf_loss, axis=1)
 
         # loss is sum of positives and negatives
-        total_loss = pos_conf_loss + neg_conf_loss
+        #total_loss = pos_conf_loss + neg_conf_loss
+        total_loss = pos_conf_loss
         total_loss /= (num_pos + tf.to_float(num_neg_batch))
-        num_pos = tf.where(tf.not_equal(num_pos, 0), num_pos,
-                            tf.ones_like(num_pos))
-        total_loss += (self.alpha * pos_loc_loss) / num_pos
+        #num_pos = tf.where(tf.not_equal(num_pos, 0), num_pos,
+        #                    tf.ones_like(num_pos))
+        #total_loss += (self.alpha * pos_loc_loss) / num_pos
         return total_loss

@@ -59,7 +59,7 @@ print('based on VGG16 pretrained model')
 
 # priors = pickle.load(open('prior_boxes_ssd300.pkl', 'rb'))
 model = SSD300(input_shape, num_classes=NUM_CLASSES)
-model.load_weights('../weights_SSD300.hdf5', by_name=True)
+#model.load_weights('../weights_SSD300.hdf5', by_name=True)
 print(model.summary())
 #model.load_weights('../checkpoints/SUNRGBD/weights-v3.16-3.50.hdf5')
 #model.load_weights('../checkpoints/VOCB3DO/weights-v4.00-3.54.hdf5', by_name=True)
@@ -255,6 +255,8 @@ class Generator(object):
                     if self.vflip_prob > 0:
                         img, y = self.vertical_flip(img, y)
                 y = self.bbox_util.assign_boxes(y)
+                import pdb
+                pdb.set_trace()
                 inputs.append(img)                
                 targets.append(y)
                 if len(targets) == self.batch_size:
@@ -269,8 +271,8 @@ class Generator(object):
 # In[8]:
 
 path_prefix = '/data/jun/dataset/'
-gen = Generator(gt, bbox_util, 32, path_prefix,
-        train_keys, val_keys,
+gen = Generator(gt, bbox_util, 1, path_prefix,
+        train_keys[0:2], val_keys,
                 (input_shape[0], input_shape[1]), do_crop=True)
 
 

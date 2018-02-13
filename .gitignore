@@ -1,6 +1,12 @@
 dataset
+Thesis_Images
 *.hdf5
 src/__pycache__/
 src/.ipynb_checkpoints/
 *.pkl
 *.out
+logs
+tensor_log
+results
+src/images
+data

@@ -43,7 +43,7 @@ class XML_preprocessor(object):
             one_hot_vector[0] = 1
         elif name == 'bicycle':
             one_hot_vector[1] = 1
-        elif name == 'bird':
+        elif name == 'bird': 
             one_hot_vector[2] = 1
         elif name == 'boat':
             one_hot_vector[3] = 1

@@ -1,0 +1,239 @@
+2017-10-06 13:35:34.977149: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use SSE4.1 instructions, but these are available on your machine and could speed up CPU computations.
+2017-10-06 13:35:34.977190: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use SSE4.2 instructions, but these are available on your machine and could speed up CPU computations.
+2017-10-06 13:35:34.977198: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use AVX instructions, but these are available on your machine and could speed up CPU computations.
+2017-10-06 13:35:34.977204: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use AVX2 instructions, but these are available on your machine and could speed up CPU computations.
+2017-10-06 13:35:34.977209: W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use FMA instructions, but these are available on your machine and could speed up CPU computations.
+2017-10-06 13:35:35.157826: I tensorflow/core/common_runtime/gpu/gpu_device.cc:955] Found device 0 with properties:
+name: Quadro P6000
+major: 6 minor: 1 memoryClockRate (GHz) 1.645
+pciBusID 0000:05:00.0
+Total memory: 23.87GiB
+Free memory: 23.22GiB
+2017-10-06 13:35:35.291513: W tensorflow/stream_executor/cuda/cuda_driver.cc:523] A non-primary context 0x49acff0 exists before initializing the StreamExecutor. We haven't verified StreamExecutor works with that.
+2017-10-06 13:35:35.292083: I tensorflow/core/common_runtime/gpu/gpu_device.cc:955] Found device 1 with properties:
+name: GeForce GTX 1080 Ti
+major: 6 minor: 1 memoryClockRate (GHz) 1.582
+pciBusID 0000:0a:00.0
+Total memory: 10.91GiB
+Free memory: 1.94GiB
+2017-10-06 13:35:35.293277: I tensorflow/core/common_runtime/gpu/gpu_device.cc:976] DMA: 0 1
+2017-10-06 13:35:35.293295: I tensorflow/core/common_runtime/gpu/gpu_device.cc:986] 0:   Y Y
+2017-10-06 13:35:35.293301: I tensorflow/core/common_runtime/gpu/gpu_device.cc:986] 1:   Y Y
+2017-10-06 13:35:35.293318: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1045] Creating TensorFlow device (/gpu:0) -> (device: 0, name: Quadro P6000, pci bus id: 0000:05:00.0)
+2017-10-06 13:35:35.293330: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1045] Creating TensorFlow device (/gpu:1) -> (device: 1, name: GeForce GTX 1080 Ti, pci bus id: 0000:0a:00.0)
+2017-10-06 13:35:35.481342: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1045] Creating TensorFlow device (/gpu:0) -> (device: 0, name: Quadro P6000, pci bus id: 0000:05:00.0)
+2017-10-06 13:35:35.481388: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1045] Creating TensorFlow device (/gpu:1) -> (device: 1, name: GeForce GTX 1080 Ti, pci bus id: 0000:0a:00.0)
+2017-10-06 13:35:37.043892: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1045] Creating TensorFlow device (/gpu:0) -> (device: 0, name: Quadro P6000, pci bus id: 0000:05:00.0)
+2017-10-06 13:35:37.043937: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1045] Creating TensorFlow device (/gpu:1) -> (device: 1, name: GeForce GTX 1080 Ti, pci bus id: 0000:0a:00.0)
+24
+(64,)
+num_train 849
+Epoch 1/300
+20/21 [===========================>..] - ETA: 1s - loss: 5.6836Epoch 00000: val_loss improved from inf to 4.61644, saving model to ../checkpoints/VOCB3DO/weights.best.hdf5
+21/21 [==============================] - 61s - loss: 5.6279 - val_loss: 4.6164
+Epoch 2/300
+20/21 [===========================>..] - ETA: 1s - loss: 4.4185Epoch 00001: val_loss did not improve
+21/21 [==============================] - 50s - loss: 4.4293 - val_loss: 4.6266
+Epoch 3/300
+20/21 [===========================>..] - ETA: 1s - loss: 4.2224Epoch 00002: val_loss improved from 4.61644 to 4.52166, saving model to ../checkpoints/VOCB3DO/weights.best.hdf5
+21/21 [==============================] - 48s - loss: 4.2167 - val_loss: 4.5217
+Epoch 4/300
+20/21 [===========================>..] - ETA: 1s - loss: 4.1399Epoch 00003: val_loss improved from 4.52166 to 4.44037, saving model to ../checkpoints/VOCB3DO/weights.best.hdf5
+21/21 [==============================] - 48s - loss: 4.1462 - val_loss: 4.4404
+Epoch 5/300
+20/21 [===========================>..] - ETA: 1s - loss: 4.1341Epoch 00004: val_loss improved from 4.44037 to 4.42268, saving model to ../checkpoints/VOCB3DO/weights.best.hdf5
+21/21 [==============================] - 47s - loss: 4.1347 - val_loss: 4.4227
+Epoch 6/300
+20/21 [===========================>..] - ETA: 1s - loss: 4.1073Epoch 00005: val_loss did not improve
+21/21 [==============================] - 47s - loss: 4.1005 - val_loss: 4.5231
+Epoch 7/300
+20/21 [===========================>..] - ETA: 1s - loss: 4.1044Epoch 00006: val_loss did not improve
+21/21 [==============================] - 49s - loss: 4.1071 - val_loss: 4.4982
+Epoch 8/300
+20/21 [===========================>..] - ETA: 1s - loss: 4.0752Epoch 00007: val_loss did not improve
+21/21 [==============================] - 48s - loss: 4.0746 - val_loss: 4.5074
+Epoch 9/300
+20/21 [===========================>..] - ETA: 1s - loss: 4.0087Epoch 00008: val_loss did not improve
+21/21 [==============================] - 48s - loss: 4.0134 - val_loss: 4.4250
+Epoch 10/300
+20/21 [===========================>..] - ETA: 1s - loss: 3.9874Epoch 00009: val_loss did not improve
+21/21 [==============================] - 47s - loss: 3.9779 - val_loss: 4.4316
+Epoch 11/300
+20/21 [===========================>..] - ETA: 1s - loss: 3.9370Epoch 00010: val_loss improved from 4.42268 to 4.36352, saving model to ../checkpoints/VOCB3DO/weights.best.hdf5
+21/21 [==============================] - 52s - loss: 3.9209 - val_loss: 4.3635
+Epoch 12/300
+20/21 [===========================>..] - ETA: 1s - loss: 3.8472Epoch 00011: val_loss improved from 4.36352 to 4.24963, saving model to ../checkpoints/VOCB3DO/weights.best.hdf5
+21/21 [==============================] - 50s - loss: 3.8524 - val_loss: 4.2496
+Epoch 13/300
+20/21 [===========================>..] - ETA: 1s - loss: 3.8049Epoch 00012: val_loss did not improve
+21/21 [==============================] - 52s - loss: 3.7981 - val_loss: 4.3662
+Epoch 14/300
+20/21 [===========================>..] - ETA: 1s - loss: 3.7539Epoch 00013: val_loss did not improve
+21/21 [==============================] - 47s - loss: 3.7450 - val_loss: 4.3625
+Epoch 15/300
+20/21 [===========================>..] - ETA: 1s - loss: 3.7466Epoch 00014: val_loss improved from 4.24963 to 4.22122, saving model to ../checkpoints/VOCB3DO/weights.best.hdf5
+21/21 [==============================] - 50s - loss: 3.7352 - val_loss: 4.2212
+Epoch 16/300
+20/21 [===========================>..] - ETA: 1s - loss: 3.6370Epoch 00015: val_loss did not improve
+21/21 [==============================] - 52s - loss: 3.6410 - val_loss: 4.2543
+Epoch 17/300
+20/21 [===========================>..] - ETA: 1s - loss: 3.5699Epoch 00016: val_loss did not improve
+21/21 [==============================] - 51s - loss: 3.5779 - val_loss: 4.2343
+Epoch 18/300
+20/21 [===========================>..] - ETA: 1s - loss: 3.5692Epoch 00017: val_loss improved from 4.22122 to 4.20500, saving model to ../checkpoints/VOCB3DO/weights.best.hdf5
+21/21 [==============================] - 53s - loss: 3.5593 - val_loss: 4.2050
+Epoch 19/300
+20/21 [===========================>..] - ETA: 1s - loss: 3.4712Epoch 00018: val_loss did not improve
+21/21 [==============================] - 50s - loss: 3.4694 - val_loss: 4.2215
+Epoch 20/300
+20/21 [===========================>..] - ETA: 1s - loss: 3.4148Epoch 00019: val_loss improved from 4.20500 to 4.15423, saving model to ../checkpoints/VOCB3DO/weights.best.hdf5
+21/21 [==============================] - 53s - loss: 3.4151 - val_loss: 4.1542
+Epoch 21/300
+20/21 [===========================>..] - ETA: 1s - loss: 3.4105Epoch 00020: val_loss improved from 4.15423 to 4.15408, saving model to ../checkpoints/VOCB3DO/weights.best.hdf5
+21/21 [==============================] - 49s - loss: 3.3944 - val_loss: 4.1541
+Epoch 22/300
+20/21 [===========================>..] - ETA: 1s - loss: 3.3182Epoch 00021: val_loss did not improve
+21/21 [==============================] - 49s - loss: 3.3208 - val_loss: 4.1707
+Epoch 23/300
+20/21 [===========================>..] - ETA: 1s - loss: 3.3015Epoch 00022: val_loss did not improve
+21/21 [==============================] - 52s - loss: 3.3104 - val_loss: 4.2328
+Epoch 24/300
+20/21 [===========================>..] - ETA: 1s - loss: 3.2516Epoch 00023: val_loss improved from 4.15408 to 4.12844, saving model to ../checkpoints/VOCB3DO/weights.best.hdf5
+21/21 [==============================] - 51s - loss: 3.2467 - val_loss: 4.1284
+Epoch 25/300
+20/21 [===========================>..] - ETA: 1s - loss: 3.1915Epoch 00024: val_loss improved from 4.12844 to 4.09069, saving model to ../checkpoints/VOCB3DO/weights.best.hdf5
+21/21 [==============================] - 50s - loss: 3.1917 - val_loss: 4.0907
+Epoch 26/300
+20/21 [===========================>..] - ETA: 1s - loss: 3.1546Epoch 00025: val_loss did not improve
+21/21 [==============================] - 51s - loss: 3.1579 - val_loss: 4.1523
+Epoch 27/300
+20/21 [===========================>..] - ETA: 1s - loss: 3.0665Epoch 00026: val_loss did not improve
+21/21 [==============================] - 49s - loss: 3.0726 - val_loss: 4.1533
+Epoch 28/300
+20/21 [===========================>..] - ETA: 1s - loss: 3.0516Epoch 00027: val_loss did not improve
+21/21 [==============================] - 52s - loss: 3.0426 - val_loss: 4.1433
+Epoch 29/300
+20/21 [===========================>..] - ETA: 1s - loss: 3.0168Epoch 00028: val_loss did not improve
+21/21 [==============================] - 49s - loss: 3.0246 - val_loss: 4.1929
+Epoch 30/300
+20/21 [===========================>..] - ETA: 1s - loss: 2.9955Epoch 00029: val_loss improved from 4.09069 to 4.05553, saving model to ../checkpoints/VOCB3DO/weights.best.hdf5
+21/21 [==============================] - 48s - loss: 2.9996 - val_loss: 4.0555
+Epoch 31/300
+20/21 [===========================>..] - ETA: 1s - loss: 2.9435Epoch 00030: val_loss did not improve
+21/21 [==============================] - 49s - loss: 2.9410 - val_loss: 4.1576
+Epoch 32/300
+20/21 [===========================>..] - ETA: 1s - loss: 2.9024Epoch 00031: val_loss improved from 4.05553 to 4.05475, saving model to ../checkpoints/VOCB3DO/weights.best.hdf5
+21/21 [==============================] - 51s - loss: 2.9066 - val_loss: 4.0548
+Epoch 33/300
+20/21 [===========================>..] - ETA: 1s - loss: 2.8757Epoch 00032: val_loss did not improve
+21/21 [==============================] - 50s - loss: 2.8744 - val_loss: 4.1972
+Epoch 34/300
+20/21 [===========================>..] - ETA: 1s - loss: 2.8414Epoch 00033: val_loss did not improve
+21/21 [==============================] - 51s - loss: 2.8374 - val_loss: 4.0817
+Epoch 35/300
+20/21 [===========================>..] - ETA: 1s - loss: 2.8318Epoch 00034: val_loss did not improve
+21/21 [==============================] - 48s - loss: 2.8279 - val_loss: 4.1279
+Epoch 36/300
+20/21 [===========================>..] - ETA: 1s - loss: 2.7558Epoch 00035: val_loss did not improve
+21/21 [==============================] - 51s - loss: 2.7592 - val_loss: 4.0669
+Epoch 37/300
+20/21 [===========================>..] - ETA: 1s - loss: 2.6943Epoch 00036: val_loss did not improve
+21/21 [==============================] - 49s - loss: 2.6990 - val_loss: 4.1791
+Epoch 38/300
+20/21 [===========================>..] - ETA: 1s - loss: 2.6699Epoch 00037: val_loss did not improve
+21/21 [==============================] - 48s - loss: 2.6620 - val_loss: 4.1224
+Epoch 39/300
+20/21 [===========================>..] - ETA: 1s - loss: 2.6181Epoch 00038: val_loss did not improve
+21/21 [==============================] - 50s - loss: 2.6093 - val_loss: 4.1378
+Epoch 40/300
+20/21 [===========================>..] - ETA: 1s - loss: 2.5949Epoch 00039: val_loss did not improve
+21/21 [==============================] - 49s - loss: 2.5818 - val_loss: 4.1957
+Epoch 41/300
+20/21 [===========================>..] - ETA: 1s - loss: 2.5814Epoch 00040: val_loss did not improve
+21/21 [==============================] - 53s - loss: 2.5895 - val_loss: 4.1649
+Epoch 42/300
+20/21 [===========================>..] - ETA: 1s - loss: 2.5002Epoch 00041: val_loss did not improve
+21/21 [==============================] - 50s - loss: 2.5183 - val_loss: 4.1435
+Epoch 43/300
+20/21 [===========================>..] - ETA: 1s - loss: 2.4818Epoch 00042: val_loss did not improve
+21/21 [==============================] - 52s - loss: 2.4949 - val_loss: 4.2147
+Epoch 44/300
+20/21 [===========================>..] - ETA: 1s - loss: 2.4484Epoch 00043: val_loss did not improve
+21/21 [==============================] - 59s - loss: 2.4508 - val_loss: 4.0818
+Epoch 45/300
+20/21 [===========================>..] - ETA: 1s - loss: 2.4081Epoch 00044: val_loss did not improve
+21/21 [==============================] - 56s - loss: 2.4043 - val_loss: 4.0905
+Epoch 46/300
+20/21 [===========================>..] - ETA: 1s - loss: 2.3554Epoch 00045: val_loss did not improve
+21/21 [==============================] - 54s - loss: 2.3543 - val_loss: 4.1711
+Epoch 47/300
+20/21 [===========================>..] - ETA: 1s - loss: 2.3416Epoch 00046: val_loss did not improve
+21/21 [==============================] - 50s - loss: 2.3403 - val_loss: 4.2520
+Epoch 48/300
+20/21 [===========================>..] - ETA: 1s - loss: 2.3046Epoch 00047: val_loss did not improve
+21/21 [==============================] - 52s - loss: 2.2987 - val_loss: 4.1299
+Epoch 49/300
+20/21 [===========================>..] - ETA: 1s - loss: 2.2222Epoch 00048: val_loss did not improve
+21/21 [==============================] - 55s - loss: 2.2284 - val_loss: 4.1260
+Epoch 50/300
+20/21 [===========================>..] - ETA: 1s - loss: 2.1508Epoch 00049: val_loss did not improve
+21/21 [==============================] - 53s - loss: 2.1669 - val_loss: 4.1303
+Epoch 51/300
+20/21 [===========================>..] - ETA: 1s - loss: 2.1589Epoch 00050: val_loss did not improve
+21/21 [==============================] - 57s - loss: 2.1582 - val_loss: 4.1483
+Epoch 52/300
+20/21 [===========================>..] - ETA: 1s - loss: 2.0949Epoch 00051: val_loss did not improve
+21/21 [==============================] - 49s - loss: 2.0915 - val_loss: 4.2057
+Epoch 53/300
+20/21 [===========================>..] - ETA: 1s - loss: 2.0783Epoch 00052: val_loss did not improve
+21/21 [==============================] - 53s - loss: 2.0665 - val_loss: 4.1843
+Epoch 54/300
+20/21 [===========================>..] - ETA: 1s - loss: 2.0517Epoch 00053: val_loss did not improve
+21/21 [==============================] - 53s - loss: 2.0691 - val_loss: 4.2811
+Epoch 55/300
+20/21 [===========================>..] - ETA: 1s - loss: 2.0230Epoch 00054: val_loss did not improve
+21/21 [==============================] - 54s - loss: 2.0103 - val_loss: 4.2184
+Epoch 56/300
+20/21 [===========================>..] - ETA: 1s - loss: 1.9693Epoch 00055: val_loss did not improve
+21/21 [==============================] - 54s - loss: 1.9673 - val_loss: 4.3210
+Epoch 57/300
+20/21 [===========================>..] - ETA: 1s - loss: 1.9003Epoch 00056: val_loss did not improve
+21/21 [==============================] - 52s - loss: 1.8935 - val_loss: 4.2568
+Epoch 58/300
+20/21 [===========================>..] - ETA: 1s - loss: 1.9385Epoch 00057: val_loss did not improve
+21/21 [==============================] - 51s - loss: 1.9273 - val_loss: 4.3159
+Epoch 59/300
+20/21 [===========================>..] - ETA: 1s - loss: 1.8644Epoch 00058: val_loss did not improve
+21/21 [==============================] - 50s - loss: 1.8747 - val_loss: 4.2887
+Epoch 60/300
+20/21 [===========================>..] - ETA: 1s - loss: 1.8198Epoch 00059: val_loss did not improve
+21/21 [==============================] - 52s - loss: 1.8301 - val_loss: 4.2319
+Epoch 61/300
+20/21 [===========================>..] - ETA: 1s - loss: 1.7805Epoch 00060: val_loss did not improve
+21/21 [==============================] - 48s - loss: 1.7974 - val_loss: 4.2853
+Epoch 62/300
+20/21 [===========================>..] - ETA: 1s - loss: 1.7790Epoch 00061: val_loss did not improve
+21/21 [==============================] - 49s - loss: 1.7937 - val_loss: 4.3449
+Epoch 63/300
+20/21 [===========================>..] - ETA: 1s - loss: 1.7437Epoch 00062: val_loss did not improve
+21/21 [==============================] - 55s - loss: 1.7524 - val_loss: 4.4206
+Epoch 64/300
+20/21 [===========================>..] - ETA: 1s - loss: 1.6709Epoch 00063: val_loss did not improve
+21/21 [==============================] - 52s - loss: 1.6846 - val_loss: 4.2596
+Epoch 65/300
+20/21 [===========================>..] - ETA: 1s - loss: 1.6775Epoch 00064: val_loss did not improve
+21/21 [==============================] - 57s - loss: 1.6758 - val_loss: 4.4029
+Epoch 66/300
+20/21 [===========================>..] - ETA: 1s - loss: 1.5935Epoch 00065: val_loss did not improve
+21/21 [==============================] - 49s - loss: 1.5896 - val_loss: 4.2662
+Epoch 67/300
+20/21 [===========================>..] - ETA: 1s - loss: 1.5702Epoch 00066: val_loss did not improve
+21/21 [==============================] - 53s - loss: 1.5825 - val_loss: 4.5855
+Epoch 68/300
+20/21 [===========================>..] - ETA: 1s - loss: 1.5727Epoch 00067: val_loss did not improve
+21/21 [==============================] - 53s - loss: 1.5720 - val_loss: 4.3081
+Epoch 69/300
+20/21 [===========================>..] - ETA: 1s - loss: 1.5313Epoch 00068: val_loss did not improve
+21/21 [==============================] - 49s - loss: 1.5207 - val_loss: 4.3230
+Epoch 70/300
+20/21 [===========================>..] - ETA: 1s - loss: 1.4799%

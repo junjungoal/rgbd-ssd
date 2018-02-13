@@ -99,6 +99,7 @@ class MultiboxLoss(object):
                                      axis=1)
         pos_conf_loss = tf.reduce_sum(conf_loss * y_true[:, :, -8],
                                       axis=1)
+        print("conf_loss:", pos_conf_loss)
 
         # get negatives loss, we penalize only confidence here
         num_neg = tf.minimum(self.neg_pos_ratio * num_pos,
@@ -109,6 +110,7 @@ class MultiboxLoss(object):
                                 [(1 - has_min) * self.negatives_for_hard]])
         num_neg_batch = tf.reduce_min(tf.boolean_mask(num_neg,
                                                       tf.greater(num_neg, 0)))
+        tf.Print(num_neg_batch, [tf.shape(num_neg_batch)])
         num_neg_batch = tf.to_int32(num_neg_batch)
         confs_start = 4 + self.background_label_id + 1
         confs_end = confs_start + self.num_classes - 1
@@ -130,9 +132,10 @@ class MultiboxLoss(object):
         neg_conf_loss = tf.reduce_sum(neg_conf_loss, axis=1)
 
         # loss is sum of positives and negatives
-        total_loss = pos_conf_loss + neg_conf_loss
+        #total_loss = pos_conf_loss + neg_conf_loss
+        total_loss = pos_conf_loss
         total_loss /= (num_pos + tf.to_float(num_neg_batch))
-        num_pos = tf.where(tf.not_equal(num_pos, 0), num_pos,
-                            tf.ones_like(num_pos))
-        total_loss += (self.alpha * pos_loc_loss) / num_pos
+        #num_pos = tf.where(tf.not_equal(num_pos, 0), num_pos,
+        #                    tf.ones_like(num_pos))
+        #total_loss += (self.alpha * pos_loc_loss) / num_pos
         return total_loss

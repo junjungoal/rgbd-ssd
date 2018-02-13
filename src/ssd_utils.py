@@ -31,7 +31,7 @@ class BBoxUtility(object):
         self.nms = tf.image.non_max_suppression(self.boxes, self.scores,
                                                 self._top_k,
                                                 iou_threshold=self._nms_thresh)
-        self.sess = tf.Session(config=tf.ConfigProto(device_count={'GPU': 0}))
+        self.sess = tf.Session(config=tf.ConfigProto(device_count={'GPU': 1}))
 
     @property
     def nms_thresh(self):
@@ -109,8 +109,7 @@ class BBoxUtility(object):
         encoded_box[:, :2][assign_mask] = box_center - assigned_priors_center
         encoded_box[:, :2][assign_mask] /= assigned_priors_wh
         encoded_box[:, :2][assign_mask] /= assigned_priors[:, -4:-2]
-        encoded_box[:, 2:4][assign_mask] = np.log(box_wh /
-                                                  assigned_priors_wh)
+        encoded_box[:, 2:4][assign_mask] = np.log(box_wh / assigned_priors_wh)
         encoded_box[:, 2:4][assign_mask] /= assigned_priors[:, -2:]
         return encoded_box.ravel()
 
@@ -144,7 +143,6 @@ class BBoxUtility(object):
         assignment[:, :4][best_iou_mask] = encoded_boxes[best_iou_idx,
                                                          np.arange(assign_num),
                                                          :4]
-        #pdb.set_trace()
         assignment[:, 4][best_iou_mask] = 0
         assignment[:, 5:-8][best_iou_mask] = boxes[best_iou_idx, 4:]
         assignment[:, -8][best_iou_mask] = 1

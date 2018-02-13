@@ -6,8 +6,9 @@ class XML_preprocessor(object):
 
     def __init__(self, data_path):
         self.path_prefix = data_path
-        self.num_classes = 24
+        self.num_classes = 21
         self.data = dict()
+        self.class_names = []
         self._preprocess_XML()
 
     def _preprocess_XML(self):
@@ -27,10 +28,14 @@ class XML_preprocessor(object):
                     xmax = float(bounding_box.find('xmax').text)/width
                     ymax = float(bounding_box.find('ymax').text)/height
                 bounding_box = [xmin,ymin,xmax,ymax]
-                bounding_boxes.append(bounding_box)
                 class_name = object_tree.find('name').text
                 one_hot_class = self._to_one_hot(class_name)
+                if 1 not in one_hot_class:
+                    continue
+                bounding_boxes.append(bounding_box)
                 one_hot_classes.append(one_hot_class)
+            if len(bounding_boxes) == 0:
+                continue
             image_name = root.find('filename').text
             bounding_boxes = np.asarray(bounding_boxes)
             one_hot_classes = np.asarray(one_hot_classes)
@@ -39,21 +44,22 @@ class XML_preprocessor(object):
 
     def _to_one_hot(self,name):
         one_hot_vector = [0] * self.num_classes
-        if name == 'pen_or_pencil':
+        flag = 0
+        if name == 'door_handle':
             one_hot_vector[0] = 1
         elif name == 'book':
             one_hot_vector[1] = 1
-        elif name == 'mouse':
+        elif name == 'bottle':
             one_hot_vector[2] = 1
         elif name == 'pillow':
             one_hot_vector[3] = 1
-        elif name == 'table':
+        elif name == 'bowl':
             one_hot_vector[4] = 1
         elif name == 'phone':
             one_hot_vector[5] = 1
         elif name == 'speaker':
             one_hot_vector[6] = 1
-        elif name == 'stapler':
+        elif name == 'plate':
             one_hot_vector[7] = 1
         elif name == 'table':
             one_hot_vector[8] = 1
@@ -65,35 +71,36 @@ class XML_preprocessor(object):
             one_hot_vector[11] = 1
         elif name == 'letter_tray':
             one_hot_vector[12] = 1
-        elif name == 'remote':
+        elif name == 'sofa':
             one_hot_vector[13] = 1
         elif name == 'paper_notebook':
             one_hot_vector[14] = 1
         elif name == 'poweroutlet':
             one_hot_vector[15] = 1
-        elif name == 'towl':
-            one_hot_vector[16] = 1
         elif name == 'table_knife':
-            one_hot_vector[17] = 1
+            one_hot_vector[16] = 1
         elif name == 'soap':
-            one_hot_vector[18] = 1
+            one_hot_vector[17] = 1
         elif name == 'bookcase':
-            one_hot_vector[19] = 1
+            one_hot_vector[18] = 1
         elif name == 'chair':
+            one_hot_vector[19] = 1
+        elif name == 'trash_can':
             one_hot_vector[20] = 1
-        elif name == 'bottle':
-            one_hot_vector[21] = 1
-        elif name == 'dish_or_place':
-            one_hot_vector[22] = 1
-        elif name == 'scissors':
-            one_hot_vector[23] = 1
+
         else:
+            flag = 1
             print('unknown label: %s' %name)
+        if name not in self.class_names and flag == 0:
+            self.class_names.append(name)
 
         return one_hot_vector
 
+
 ## example on how to use it
 import pickle
-data = XML_preprocessor('../dataset/VOCB3DO/Annotations/').data
+processor = XML_preprocessor('../dataset/VOCB3DO/Annotations/')
+data = processor.data
+classes = processor.class_names
+print(classes)
 pickle.dump(data,open('../pkls/VOCB3DO.pkl','wb'))
-
